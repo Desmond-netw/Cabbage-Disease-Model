@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cabbage App</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+</head>
+<body>
+   <div class="container" style="background-image: url({{url_for('static', filename='background.jpg')}}); background-repeat:no-repeat; background-size: cover; ">
+<!--    <<< the navigation start here >>>>>-->
+    {% block header%} 
+    <div class="header">
+         <div class="logo">
+             <img src="{{url_for('static', filename='logo.jpg')}}" alt="">
+         </div>
+         <div class="hero-text">
+             <h1>Cabbage Crop Disease Detection Model Using CNN</h1>
+             <h2 style="margin-left:50px;">Farmers Interface</h2>
+             <p style="margin-left:50px;">CNN: Convolutional Neural Network algorithm</p>
+         </div>
+         <ul>
+<!--             <li><a href="#">Camera instructions</a></li>-->
+             <li><a href="#"> help</a></li>
+         </ul>
+     </div>
+<!--      <<<< the navigation ends here >>>> -->
+    {%endblock header%}
+     
+    {% block content%}
+    <div class="form">
+          <form action="/predict" method="post" enctype="multipart/form-data">
+              <label for="image">Load Cabbage image here</label> <br>
+              <input class="custom-upload" type="file"  name="image" accept="image/*" > <br>
+              <button class="btn " type="button" onclick="openPopup()">Open Camera</button> <!-- this is camera button -->
+              <input class="btn_green_color" type="submit" value="Detect"><!-- this is Detect button -->
+              
+          </form>
+      </div>
+<!--      >>>>>>>>>>>>>>>>>>>>> camera popup Here-->
+       <div class="popup" id="popup">
+           <img src="{{url_for('static',filename='camera_80px.png')}}" alt="logo">
+           <h2>Capture Cabbage</h2>
+           
+           <video class="camara-feed" autoplay="true" id="videoElement" style="width: 500px; height:290px; margin: 10px; border: 2px solid red;  ">
+	
+	        </video>
+              <canvas id="canvas" width="500" height="390" style="visibility: hidden; position: absolute;"></canvas>
+           <p style="color: red; font-weight: 200;">Capture only the cabbage leaf not the entire farm</p>
+<!--          <<<<<  up video feed >>>>>  -->
+           <button class="button" type="button" onclick="closePopup()"> Close Camera</button>
+           <button class="savebtn" id="snap" type="button"> save</button>
+           
+           
+           
+    </div>
+        {% endblock content%}
+     
+   </div> 
+   
+<!--   ==== javascript start here ====-->
+<!--
+   <script>
+       window.alert("System Alert: This page act as an Interface for the Cabbage Disease Detetion Model and Does not predict Cure or Treatment");  
+    </script>
+-->
+
+   <script type="text/javascript" > 
+       
+        let popup = document.getElementById("popup");
+
+        function openPopup(){
+            popup.classList.add("open-popup");
+            
+            let canvas = document.querySelector("canvas");
+    let context = canvas.getContext("2d");
+    let video = document.querySelector("#videoElement");
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+        navigator.mediaDevices.getUserMedia({video: true}).then((stream) =>{
+            video.srcObject = stream;
+            video.play();
+        });
+    }
+    document.getElementById("snap").addEventListener("click", () => {
+        context.drawImage(video, 0, 0,640, 480);
+        
+        canvas.toBlob(function(blob){
+            console.log(typeof(blob))
+            var blobUrl = URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = "image.jpg";
+            link.innerHTML = "Click here to download the file";
+            document.body.appendChild(link);
+            document.querySelector('a').click()
+            setTimeout(function(){
+                       document.body.removeChild(a);                        window.URL.revokeObjectURL(url);
+                   }, 0);
+        }, 'image/jpeg', 1);
+    });
+    
+            
+            
+            // ########################  >>>>>>>>>>>>>>>>>>>>>>>>>
+//            var video = document.querySelector("#videoElement");
+//
+//                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+//                navigator.mediaDevices.getUserMedia({ video: true })
+//                    
+//                .then(function (stream) {
+//                    video.srcObject = stream;
+//                    video.play();
+//                })
+//                .catch(function (err0r) {
+//                console.log("Something went wrong!");
+//            });
+//             
+//                    
+//        }
+//            
+//            
+//            document.getElementById('saveSnap').onclick = function(){
+//                console.log(navigator.video);
+//                navigator.video.getPicture(function(imageUri){
+//                    var lastphoto = document.getElementById('videoElement');
+//                    alert('image save');
+//                    lastphoto.innerHTML = "<img src='" +imageUri+ "'style='width:100%;'/>";
+//                    var a = document.createElement("a"),
+//                        url = URL.createObjectURL(File);
+//                    a.href = url;
+//                    a.download = filename;
+//                    doucment.body.appendChild(a);
+//                    a.click();
+//                    setTimeout(function(){
+//                        document.body.removeChild(a);
+//                        window.URL.revokeObjectURL(url);
+//                    }, 0);
+//                });
+//            }
+            //########################### <<<<<<<<<<<<<<<
+//            function saveSnap(){
+//                video.snap(function(data_uri){
+//                    document.getElementById("#results").innerHTML=
+//                        '<img id= "webcam" src = "'+ data_uri +'">';
+//                });
+//                
+//                video.reset();
+//                
+//                var base64image = document.getElementById("webcam").src;
+//                
+//                
+//            }
+            
+        }// end of popup
+
+        function closePopup(){
+            popup.classList.remove("open-popup");
+        }
+       
+       
+       
+       
+    </script>
+    <!-- java script for camera start here --> 
+    <script>
+             
+    
+    </script>
+</body>
+</html>
